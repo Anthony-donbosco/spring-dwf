@@ -20,6 +20,26 @@
     </properties>
 
     <dependencies>
+        <!-- Motor JSP (Jasper) para compilar archivos .jsp -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            
+        </dependency>
+
+        <!-- JSTL para Jakarta EE 10 (Spring Boot 3.x) -->
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        
+
         <!-- Spring Boot Web (REST API & MVC) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
