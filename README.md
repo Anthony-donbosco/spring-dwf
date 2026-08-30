@@ -6,8 +6,6 @@
 
 [![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-blue.svg?style=flat-square&logo=mysql)](https://www.mysql.com/)
 
-[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple.svg?style=flat-square&logo=bootstrap)](https://getbootstrap.com/)
-
 [![License](https://img.shields.io/badge/License-Academic%20%2F%20UDB-lightgrey.svg?style=flat-square)]()
 
 Proyecto de Cátedra — **Fase 1: Especificación Técnica, Diseño UI/UX y Modelo Relacional**  
@@ -17,44 +15,44 @@ Proyecto de Cátedra — **Fase 1: Especificación Técnica, Diseño UI/UX y Mod
 
 ---
 
-## 👥 1. Integrantes del Equipo y Asignación de Roles
+## 1. Integrantes del Equipo y Asignación de Roles
 
 El proyecto se gestiona bajo el marco ágil **Scrum**, distribuyendo responsabilidades para garantizar la calidad en arquitectura, persistencia, interfaz y documentación:
 
 | Nombre Completo | Carnet / Código | Rol en el Proyecto | Responsabilidades Principales |
 |---|---|---|---|
-| **Anthony Alexander Monterrosa Rivera** | `MR252990` | **Líder Frontend / Diseñador UI/UX / Bases de Datos** | Diseño de maquetas interactivas en Figma/HTML, arquitectura relacional 3FN y diccionario de datos en MySQL. |
+| **Anthony Alexander Monterrosa Rivera** | `MR252990` | **Líder Frontend / Diseñador UI/UX / Bases de Datos** | Diseño de maquetas interactivas, arquitectura relacional 3FN y diccionario de datos en MySQL. |
 | **Elmer Eduardo Rivas Avilés** | `RA252958` | **Arquitecto Backend / Integrador Spring** | Configuración de Spring Boot, mapeo objeto-relacional (ORM JPA/Hibernate) y lógica de negocio. |
 | **Edwin Gabriel Medrano Yanes** | `MY252997` | **Scrum Master / Analista de Documentación** | Gestión de ceremonias ágiles, tablero Kanban en Trello, especificación de endpoints REST y aseguramiento de rúbrica. |
 
 ---
 
-## 📌 2. Enlaces de Gestión Ágil y Documentación
+## 2. Enlaces de Gestión Ágil y Documentación
 
-* 📋 **Tablero Kanban en Trello:** [Ver Tablero ](https://trello.com/invite/b/6a93c946b1ea23aaaa812928/ATTI3361a5f9f00d77a44d52903660832ad750ECD503/dwf-sistema-de-reservas-hoteleras)
+* **Tablero Kanban en Trello:** [Ver Tablero ](https://trello.com/invite/b/6a93c946b1ea23aaaa812928/ATTI3361a5f9f00d77a44d52903660832ad750ECD503/dwf-sistema-de-reservas-hoteleras)
 
-* 🐙 **Repositorio Oficial en GitHub:** [https://github.com/Anthony-donbosco/spring-dwf]
-* 📄 **Documento Técnico Oficial (Fase 1 PDF):** Disponible en la entrega del Aula Digital.
+* **Repositorio Oficial en GitHub:** [https://github.com/Anthony-donbosco/spring-dwf]
+* **Documento Técnico Oficial (Fase 1 PDF):** Disponible en la entrega del Aula Digital.
 
 ---
 
-## 🎯 3. Descripción y Objetivos del Proyecto
+## 3. Descripción y Objetivos del Proyecto
 
 ### 3.1. Objetivo General
-Desarrollar una solución integral para la gestión y reserva de habitaciones hoteleras mediante una **API REST desacoplada construida en Java con Spring Boot**, respaldada por una base de datos relacional normalizada en **MySQL 8.0**, diseñada para ser consumida de forma reactiva por interfaces web modernas en **Bootstrap 5**.
+Desarrollar una solución integral para la gestión y reserva de habitaciones hoteleras mediante una **API REST desacoplada construida en Java con Spring Boot**, respaldada por una base de datos relacional normalizada en **MySQL 8.0**, diseñada para ser consumida de forma reactiva por interfaces web modernas.
 
 ### 3.2. Alcance Funcional (Fase 1)
-* 🔍 **Motor de Búsqueda y Disponibilidad:** Búsqueda en tiempo real por hotel/sucursal, rango de fechas de check-in / check-out, y conteo de adultos/niños.
-* 🛏️ **Catálogo y Detalle de Habitaciones:** Filtrado por precio, capacidad, comodidades y servicios adicionales contratables (desayuno buffet, traslados, spa).
-* 👤 **Registro y Gestión de Huéspedes:** Captura validada de titular (DUI/Pasaporte, contacto, peticiones especiales).
-* 💳 **Pasarela de Pre-Reserva y Pagos:** Cálculo transparente de subtotal de noches, extras, 13% de IVA y métodos de cobro (tarjeta, transferencia, recepción).
-* 🧾 **Emisión de Voucher Digital:** Comprobante con localizador alfanumérico único (`#RES-2026-XXXX`) y código QR para Check-in express.
-* 🔄 **Autogestión de Reservas y Reclamos:** Reprogramación de fechas, anulación con política de reembolso y registro de tickets de incidencia.
-* 📊 **Dashboard Administrativo:** Panel de control de KPIs (tasa de ocupación, ingresos mensuales, movimientos del día).
+* **Motor de Búsqueda y Disponibilidad:** Búsqueda en tiempo real por hotel/sucursal, rango de fechas de check-in / check-out, y conteo de adultos/niños.
+* **Catálogo y Detalle de Habitaciones:** Filtrado por precio, capacidad, comodidades y servicios adicionales contratables (desayuno buffet, traslados, spa).
+* **Registro y Gestión de Huéspedes:** Captura validada de titular (DUI/Pasaporte, contacto, peticiones especiales).
+* **Pasarela de Pre-Reserva y Pagos:** Cálculo transparente de subtotal de noches, extras, 13% de IVA y métodos de cobro (tarjeta, transferencia, recepción).
+* **Emisión de Voucher Digital:** Comprobante con localizador alfanumérico único (`#RES-2026-XXXX`) y código QR para Check-in express.
+* **Autogestión de Reservas y Reclamos:** Reprogramación de fechas, anulación con política de reembolso y registro de tickets de incidencia.
+* **Dashboard Administrativo:** Panel de control de KPIs (tasa de ocupación, ingresos mensuales, movimientos del día).
 
 ---
 
-## 🏗️ 4. Arquitectura de Software y Stack Tecnológico
+## 4. Arquitectura de Software y Stack Tecnológico
 
 El backend sigue un patrón de **Arquitectura en Capas (Layered Architecture)** bajo principios **SOA (Service-Oriented Architecture)**:
 
@@ -92,7 +90,7 @@ El backend sigue un patrón de **Arquitectura en Capas (Layered Architecture)** 
 
 ---
 
-## 🗄️ 5. Modelo Relacional de Base de Datos
+## 5. Modelo Relacional de Base de Datos
 
 La base de datos se encuentra normalizada en **Tercera Forma Normal (3FN)** con claves foráneas e integridad referencial estricta:
 
@@ -111,7 +109,7 @@ cancelaciones_reembolsos (1:1)                   reclamos_solicitudes (N)
 
 ---
 
-## 🚀 6. Guía de Instalación y Ejecución Local
+## 6. Guía de Instalación y Ejecución Local
 
 ### Prerrequisitos:
 1. **Java JDK 17 o superior** instalado y configurado en el `PATH` (`java -version`).
@@ -160,7 +158,7 @@ La API estará escuchando en `http://localhost:8080`.
 
 ---
 
-## 📡 7. Especificación de Endpoints REST Principales
+## 7. Especificación de Endpoints REST Principales
 
 | Verbo | Endpoint | Descripción | Acceso |
 |---|---|---|---|
@@ -177,7 +175,7 @@ La API estará escuchando en `http://localhost:8080`.
 
 ---
 
-## 🖥️ 8. Prototipos de Interfaz de Usuario (Mockups)
+## 8. Prototipos de Interfaz de Usuario (Mockups)
 
 Los 10+ prototipos de alta fidelidad fueron creados y maquetados con **Bootstrap 5** y se encuentran disponibles en la carpeta `/pantallas`:
 
@@ -195,5 +193,5 @@ Los 10+ prototipos de alta fidelidad fueron creados y maquetados con **Bootstrap
 
 ---
 
-## 📜 9. Licencia y Criterios de Evaluación
+## 9. Licencia y Criterios de Evaluación
 Desarrollado para la evaluación de **Primera Fase del Proyecto DWF 2026** — Escuela de Computación, Universidad Don Bosco.
