@@ -17,7 +17,7 @@ Proyecto de Cátedra — **Fase 1: Especificación Técnica, Diseño UI/UX y Mod
 
 ## 1. Integrantes del Equipo y Asignación de Roles
 
-El proyecto se gestiona bajo el marco ágil **Scrum**, distribuyendo responsabilidades para garantizar la calidad en arquitectura, persistencia, interfaz y documentación:
+El proyecto se gestiona bajo el marco ágil **Scrum**, distribuyendo responsabilidades para garantizar la calidad en arquitectura, persistencia, interfaz y documentación: 
 
 | Nombre Completo | Carnet / Código | Rol en el Proyecto | Responsabilidades Principales |
 |---|---|---|---|
