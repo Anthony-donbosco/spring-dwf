@@ -1,3 +1,9 @@
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
 ### STS ###
 .apt_generated
 .classpath
@@ -12,6 +18,7 @@
 *.iws
 *.iml
 *.ipr
+out/
 
 ### NetBeans ###
 /nbproject/private/
@@ -27,3 +34,6 @@ build/
 .vscode/
 
 pantallas/
+### OS Generated ###
+.DS_Store
+Thumbs.db
