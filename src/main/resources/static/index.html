@@ -1,0 +1,509 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Central | Gestión Hotelera</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6fa;
+            color: #243047;
+        }
+
+        header {
+            background: #142b4a;
+            color: white;
+            padding: 24px 7%;
+        }
+
+        header h1 { margin: 0 0 8px; }
+        header p { margin: 0; color: #d1dceb; }
+
+        nav {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 15px 7%;
+            background: white;
+            border-bottom: 1px solid #e1e6ed;
+        }
+
+        nav a {
+            color: #254c78;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        main {
+            width: 86%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .welcome {
+            background: #dfeafa;
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 { margin-top: 0; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .stat, .panel, .room {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #142b4a0d;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 28px;
+            color: #1b568c;
+            margin-top: 10px;
+        }
+
+        h2 { color: #142b4a; }
+
+        .rooms {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+
+        .room h3 { margin-top: 0; }
+        .price { font-size: 25px; font-weight: bold; color: #1b568c; }
+        .muted { color: #68778b; font-size: 14px; }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            background: #e0f5e8;
+            color: #17683b;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .panel { margin-bottom: 30px; }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .field.full { grid-column: 1 / -1; }
+
+        label { font-weight: bold; font-size: 14px; }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd4df;
+            border-radius: 7px;
+            font: inherit;
+            background: white;
+        }
+
+        textarea { min-height: 80px; resize: vertical; }
+
+        button {
+            background: #1b568c;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            padding: 13px 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover { background: #123e69; }
+        button:disabled { opacity: .6; cursor: wait; }
+
+        .message {
+            padding: 14px;
+            margin: 15px 0;
+            border-radius: 8px;
+            display: none;
+            overflow-wrap: anywhere;
+        }
+
+        .success { display: block; background: #e0f5e8; color: #17683b; }
+        .error { display: block; background: #fde8e7; color: #9e2822; }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #68778b;
+        }
+
+        @media (max-width: 600px) {
+            main { width: 92%; }
+            header { padding: 22px 5%; }
+            nav { padding: 15px 5%; }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <h1>🏨 Hotel Central</h1>
+    <p>Sistema de gestión hotelera</p>
+</header>
+
+<nav>
+    <a href="#inicio">Inicio</a>
+    <a href="#habitaciones">Habitaciones</a>
+    <a href="#reserva">Crear reserva</a>
+</nav>
+
+<main>
+    <section class="welcome" id="inicio">
+        <h2>Bienvenido a Hotel Central</h2>
+        <p>Consultá nuestras habitaciones y gestioná tus reservas desde un solo lugar.</p>
+    </section>
+
+    <section class="stats">
+        <div class="stat">
+            Habitaciones disponibles
+            <strong id="totalHabitaciones">...</strong>
+        </div>
+        <div class="stat">
+            Tipos de habitación
+            <strong id="totalTipos">...</strong>
+        </div>
+        <div class="stat">
+            Estado del sistema
+            <strong id="estadoApi" style="font-size:20px">Conectando...</strong>
+        </div>
+    </section>
+
+    <section id="habitaciones">
+        <h2>Nuestras habitaciones</h2>
+        <p class="muted">Precios por noche. La disponibilidad puede cambiar según las fechas.</p>
+        <div id="listaHabitaciones" class="rooms">
+            <p>Cargando habitaciones...</p>
+        </div>
+    </section>
+
+    <section class="panel" id="reserva">
+        <h2>Registrar huésped y crear reserva</h2>
+        <p class="muted">
+            Completá los datos del huésped y seleccioná una habitación.
+            La reserva se vinculará a la política de cancelación estándar.
+        </p>
+
+        <div id="mensaje" class="message" role="status"></div>
+
+        <form id="formReserva">
+            <div class="field">
+                <label for="nombres">Nombres *</label>
+                <input id="nombres" required maxlength="100">
+            </div>
+
+            <div class="field">
+                <label for="apellidos">Apellidos *</label>
+                <input id="apellidos" required maxlength="100">
+            </div>
+
+            <div class="field">
+                <label for="tipoDocumento">Tipo de documento *</label>
+                <select id="tipoDocumento" required>
+                    <option value="DUI">DUI</option>
+                    <option value="PASAPORTE">Pasaporte</option>
+                    <option value="OTRO">Otro</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="numeroDocumento">Número de documento *</label>
+                <input id="numeroDocumento" required maxlength="30">
+            </div>
+
+            <div class="field">
+                <label for="fechaNacimiento">Fecha de nacimiento *</label>
+                <input id="fechaNacimiento" type="date" required>
+            </div>
+
+            <div class="field">
+                <label for="correo">Correo electrónico *</label>
+                <input id="correo" type="email" required maxlength="150">
+            </div>
+
+            <div class="field">
+                <label for="telefono">Teléfono *</label>
+                <input id="telefono" required maxlength="30">
+            </div>
+
+            <div class="field">
+                <label for="nacionalidad">Nacionalidad</label>
+                <input id="nacionalidad" value="Salvadoreña">
+            </div>
+
+            <div class="field full">
+                <label for="direccion">Dirección</label>
+                <input id="direccion">
+            </div>
+
+            <div class="field">
+                <label for="habitacion">Habitación *</label>
+                <select id="habitacion" required>
+                    <option value="">Cargando habitaciones...</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="checkin">Fecha de entrada *</label>
+                <input id="checkin" type="date" required>
+            </div>
+
+            <div class="field">
+                <label for="checkout">Fecha de salida *</label>
+                <input id="checkout" type="date" required>
+            </div>
+
+            <div class="field">
+                <label for="cantidad">Cantidad de huéspedes *</label>
+                <input id="cantidad" type="number" min="1" value="1" required>
+            </div>
+
+            <div class="field full">
+                <label for="peticiones">Peticiones especiales</label>
+                <textarea id="peticiones" placeholder="Opcional"></textarea>
+            </div>
+
+            <div class="field full">
+                <button id="btnReservar" type="submit">Registrar huésped y confirmar reserva</button>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer>
+    Hotel Central · Sistema de Gestión Hotelera
+</footer>
+
+<script>
+    const API = "/api";
+    let habitacionesDisponibles = [];
+
+    const mensaje = document.getElementById("mensaje");
+    const boton = document.getElementById("btnReservar");
+
+    function mostrarMensaje(texto, tipo) {
+        mensaje.textContent = texto;
+        mensaje.className = "message " + tipo;
+    }
+
+    async function pedir(url, opciones = {}) {
+        const respuesta = await fetch(url, {
+            ...opciones,
+            headers: {
+                "Content-Type": "application/json",
+                ...(opciones.headers || {})
+            }
+        });
+
+        const texto = await respuesta.text();
+        let datos = null;
+
+        if (texto) {
+            try {
+                datos = JSON.parse(texto);
+            } catch {
+                datos = texto;
+            }
+        }
+
+        if (!respuesta.ok) {
+            const detalle = typeof datos === "string"
+                ? datos
+                : (datos?.message || datos?.error || JSON.stringify(datos));
+            throw new Error("HTTP " + respuesta.status + ": " + detalle);
+        }
+
+        return datos;
+    }
+
+    async function cargarHabitaciones() {
+        const contenedor = document.getElementById("listaHabitaciones");
+        const selector = document.getElementById("habitacion");
+
+        try {
+            habitacionesDisponibles = await pedir(API + "/habitaciones/disponibles");
+
+            document.getElementById("totalHabitaciones").textContent =
+                habitacionesDisponibles.length;
+            document.getElementById("estadoApi").textContent = "Conectada";
+
+            contenedor.innerHTML = "";
+            selector.innerHTML = '<option value="">Seleccioná una habitación</option>';
+
+            habitacionesDisponibles.forEach(h => {
+                const tipo = h.tipoHabitacion?.nombreTipo || "Habitación";
+                const sucursal = h.sucursal?.nombre || "Hotel Central";
+
+                const tarjeta = document.createElement("article");
+                tarjeta.className = "room";
+
+                const titulo = document.createElement("h3");
+                titulo.textContent = tipo + " · " + h.numeroHabitacion;
+
+                const ubicacion = document.createElement("p");
+                ubicacion.className = "muted";
+                ubicacion.textContent = sucursal + " · Piso " + h.piso;
+
+                const precio = document.createElement("p");
+                precio.className = "price";
+                precio.textContent = "$" + Number(h.precioNoche).toFixed(2);
+
+                const porNoche = document.createElement("p");
+                porNoche.className = "muted";
+                porNoche.textContent = "por noche";
+
+                const estado = document.createElement("span");
+                estado.className = "status";
+                estado.textContent = h.estado;
+
+                tarjeta.append(titulo, ubicacion, precio, porNoche, estado);
+                contenedor.appendChild(tarjeta);
+
+                const opcion = document.createElement("option");
+                opcion.value = h.idHabitacion;
+                opcion.textContent = tipo + " · " + h.numeroHabitacion
+                    + " · $" + Number(h.precioNoche).toFixed(2) + "/noche";
+                selector.appendChild(opcion);
+            });
+
+            if (habitacionesDisponibles.length === 0) {
+                contenedor.textContent = "No hay habitaciones disponibles.";
+            }
+        } catch (error) {
+            document.getElementById("estadoApi").textContent = "Error";
+            contenedor.textContent = "No se pudieron cargar las habitaciones: " + error.message;
+        }
+    }
+
+    async function cargarTipos() {
+        try {
+            const tipos = await pedir(API + "/tipos-habitacion");
+            document.getElementById("totalTipos").textContent = tipos.length;
+        } catch {
+            document.getElementById("totalTipos").textContent = "Error";
+        }
+    }
+
+    document.getElementById("formReserva").addEventListener("submit", async function(event) {
+        event.preventDefault();
+        boton.disabled = true;
+        boton.textContent = "Procesando...";
+        mensaje.className = "message";
+
+        try {
+            const habitacionId = Number(document.getElementById("habitacion").value);
+            const habitacion = habitacionesDisponibles.find(
+                h => h.idHabitacion === habitacionId
+            );
+
+            if (!habitacion) {
+                throw new Error("Seleccioná una habitación disponible.");
+            }
+
+            const checkin = document.getElementById("checkin").value;
+            const checkout = document.getElementById("checkout").value;
+
+            if (checkout <= checkin) {
+                throw new Error("La fecha de salida debe ser posterior a la entrada.");
+            }
+
+            const huesped = await pedir(API + "/huespedes", {
+                method: "POST",
+                body: JSON.stringify({
+                    nombres: document.getElementById("nombres").value.trim(),
+                    apellidos: document.getElementById("apellidos").value.trim(),
+                    tipoDocumento: document.getElementById("tipoDocumento").value,
+                    numeroDocumento: document.getElementById("numeroDocumento").value.trim(),
+                    fechaNacimiento: document.getElementById("fechaNacimiento").value,
+                    correoElectronico: document.getElementById("correo").value.trim(),
+                    telefono: document.getElementById("telefono").value.trim(),
+                    nacionalidad: document.getElementById("nacionalidad").value.trim(),
+                    direccion: document.getElementById("direccion").value.trim()
+                })
+            });
+
+            if (!huesped?.idHuesped) {
+                throw new Error("El huésped se envió, pero la respuesta no incluyó su ID.");
+            }
+
+            const reserva = await pedir(API + "/reservas", {
+                method: "POST",
+                body: JSON.stringify({
+                    huesped: { idHuesped: huesped.idHuesped },
+                    habitacion: { idHabitacion: habitacionId },
+                    politicaCancelacion: { idPolitica: 1 },
+                    fechaCheckin: checkin,
+                    fechaCheckout: checkout,
+                    cantidadHuespedes: Number(document.getElementById("cantidad").value),
+                    peticionesEspeciales: document.getElementById("peticiones").value.trim()
+                })
+            });
+
+            mostrarMensaje(
+                "¡Reserva creada! Código: " + reserva.codigoReserva
+                + ". Total: $" + Number(reserva.montoTotal).toFixed(2),
+                "success"
+            );
+
+            this.reset();
+            document.getElementById("nacionalidad").value = "Salvadoreña";
+            document.getElementById("cantidad").value = "1";
+            await cargarHabitaciones();
+
+        } catch (error) {
+            mostrarMensaje(
+                "No se pudo completar la operación: " + error.message
+                + ". Revisá Swagger y la consola de NetBeans.",
+                "error"
+            );
+        } finally {
+            boton.disabled = false;
+            boton.textContent = "Registrar huésped y confirmar reserva";
+        }
+    });
+
+    // Evita fechas de entrada anteriores a hoy.
+    const hoy = new Date();
+    const fechaLocal = new Date(hoy.getTime() - hoy.getTimezoneOffset() * 60000)
+        .toISOString().slice(0, 10);
+    document.getElementById("checkin").min = fechaLocal;
+    document.getElementById("checkout").min = fechaLocal;
+    document.getElementById("checkin").addEventListener("change", function() {
+        document.getElementById("checkout").min = this.value;
+    });
+
+    cargarHabitaciones();
+    cargarTipos();
+</script>
+</body>
+</html>
