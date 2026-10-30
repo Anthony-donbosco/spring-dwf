@@ -222,7 +222,22 @@
 <header>
     <h1>🏨 Hotel Central</h1>
     <p>Sistema de gestión hotelera</p>
+
+    <div style="margin-top: 15px;">
+        <span id="usuarioActual">Usuario: cargando...</span>
+        <button type="button" onclick="cerrarSesion()"
+                style="margin-left: 15px; background: #a83232;">
+            Cerrar sesión
+        </button>
+    </div>
 </header>
+  <div id="opcionesAdmin" hidden style="margin-top: 15px;">
+    <h3>Panel de administración</h3>
+    <button type="button" onclick="consultarPagos()">
+        Consultar pagos
+    </button>
+    <div id="resultadoPagos"></div>
+</div>
 
 <nav>
     <a href="#inicio">Inicio</a>
@@ -360,12 +375,13 @@
 <script>
     const API = "/api";
     let habitacionesDisponibles = [];
-let credenciales = "";
+let tokenJWT = "";
 
 const login = document.getElementById("login");
 const aplicacion = document.getElementById("aplicacion");
 const formLogin = document.getElementById("formLogin");
 const mensajeLogin = document.getElementById("mensajeLogin");
+
 
 formLogin.addEventListener("submit", async function(event) {
     event.preventDefault();
@@ -377,24 +393,25 @@ formLogin.addEventListener("submit", async function(event) {
     botonLogin.disabled = true;
     botonLogin.textContent = "Verificando...";
 
-    const intento = btoa(unescape(encodeURIComponent(usuario + ":" + password)));
-
     try {
-        const respuesta = await fetch(API + "/habitaciones/disponibles", {
+        const respuesta = await fetch(API + "/auth/login", {
+            method: "POST",
             headers: {
-                "Authorization": "Basic " + intento
-            }
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: usuario,
+                password: password
+            })
         });
 
+        const resultado = await respuesta.json();
+
         if (!respuesta.ok) {
-            throw new Error(
-                respuesta.status === 401
-                    ? "Usuario o contraseña incorrectos."
-                    : "No se pudo iniciar sesión. Código: " + respuesta.status
-            );
+            throw new Error(resultado.error || "No se pudo iniciar sesión.");
         }
 
-        credenciales = intento;
+        tokenJWT = resultado.token;
 
         login.hidden = true;
         aplicacion.hidden = false;
@@ -410,6 +427,7 @@ formLogin.addEventListener("submit", async function(event) {
     }
 });
 
+
     const mensaje = document.getElementById("mensaje");
     const boton = document.getElementById("btnReservar");
 
@@ -421,9 +439,9 @@ formLogin.addEventListener("submit", async function(event) {
     async function pedir(url, opciones = {}) {
         const respuesta = await fetch(url, {
             ...opciones,
-          headers: {
+ headers: {
     "Content-Type": "application/json",
-    "Authorization": "Basic " + credenciales,
+    "Authorization": "Bearer " + tokenJWT,
     ...(opciones.headers || {})
 }
         });
@@ -605,10 +623,68 @@ formLogin.addEventListener("submit", async function(event) {
         document.getElementById("checkout").min = this.value;
     });
 
-   async function iniciarSistema() {
+ async function iniciarSistema() {
+    await cargarUsuario();
     await cargarHabitaciones();
     await cargarTipos();
 }
+async function cargarUsuario() {
+    const usuario = await pedir(API + "/auth/usuario");
+
+    const esAdmin = usuario.roles.includes("ROLE_ADMIN");
+
+    const rol = esAdmin
+        ? "Administrador"
+        : "Recepcionista";
+
+    document.getElementById("usuarioActual").textContent =
+        usuario.username + " | " + rol;
+
+    document.getElementById("opcionesAdmin").hidden = !esAdmin;
+}
+
+async function consultarPagos() {
+    const resultado = document.getElementById("resultadoPagos");
+
+    resultado.textContent = "Consultando pagos...";
+
+    try {
+        const pagos = await pedir(API + "/pagos");
+
+        if (pagos.length === 0) {
+            resultado.textContent = "No hay pagos registrados.";
+            return;
+        }
+
+        resultado.innerHTML = "";
+
+        pagos.forEach(pago => {
+            const elemento = document.createElement("p");
+
+            elemento.textContent =
+                "Pago #" + pago.idPago +
+                " | Monto: $" + Number(pago.montoPagado).toFixed(2) +
+                " | Estado: " + pago.estadoPago;
+
+            resultado.appendChild(elemento);
+        });
+
+    } catch (error) {
+        resultado.textContent = "Error al consultar pagos: " + error.message;
+    }
+}
+
+
+function cerrarSesion() {
+    tokenJWT = "";
+    aplicacion.hidden = true;
+    login.hidden = false;
+    formLogin.reset();
+
+    mensajeLogin.textContent = "";
+    mensajeLogin.className = "message";
+}
+
 </script>
 </body>
 </html>
