@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sistema_hotelero.entity.Pago;
 import sistema_hotelero.service.PagoService;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/pagos")
@@ -23,7 +24,8 @@ public class PagoController {
         Pago guardado = service.registrar(pago);
         return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
     }
-
+    
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<Pago> listarTodos() {
         return service.listarTodos();
